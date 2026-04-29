@@ -1,7 +1,9 @@
-selenium
+streamlit
+pandas
 gspread
 oauth2client
-pandas
-streamlit
 cryptography
-python-dotenv
+subprocess
+sys
+json
+os
