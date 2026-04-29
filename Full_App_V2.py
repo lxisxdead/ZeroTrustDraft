@@ -83,29 +83,6 @@ def load_all_pools():
             return {"Top": [], "Jungle": [], "Mid": [], "Bot": [], "Support": []}
     return {"Top": [], "Jungle": [], "Mid": [], "Bot": [], "Support": []}
 
-with st.sidebar:
-    user_role = st.selectbox("Select Your Role", ["Top", "Jungle", "Mid", "Bot", "Support"])
-    
-    saved_data = load_all_pools()
-    default_pool = saved_data.get(user_role, [])
-
-    my_pool = st.multiselect(
-        f"Define {user_role} Pool", 
-        options=ALL_CHAMPS, 
-        default=default_pool
-    )
-
-    # 2. THE KILL SWITCH
-    # 'disabled=is_cloud' means the button is grayed out on the web 
-    # but works perfectly on your local machine.
-    if st.button(f"💾 Save {user_role} Profile", disabled=is_cloud):
-        save_pool_for_role(user_role, my_pool)
-        st.toast(f"Profile Saved Successfully") 
-
-    # 3. DISCLAIMER
-    if is_cloud:
-        st.caption("⚠️ Saving is disabled in the public preview.")
-
 def save_pool_for_role(role, pool_list):
     """Saves only the pool for the currently selected role."""
     all_data = load_all_pools()
@@ -293,29 +270,25 @@ except Exception as e:
 with st.sidebar:
     user_role = st.selectbox("Select Your Role", ["Top", "Jungle", "Mid", "Bot", "Support"])
     
-    # 1. Initialize the pool in Session State if it doesn't exist yet
-    if f"pool_{user_role}" not in st.session_state:
-        # Try to load from your JSON as a baseline
-        saved_data = load_all_pools()
-        st.session_state[f"pool_{user_role}"] = saved_data.get(user_role, [])
+    saved_data = load_all_pools()
+    default_pool = saved_data.get(user_role, [])
 
-    # 2. Use the Session State as the default value
     my_pool = st.multiselect(
         f"Define {user_role} Pool", 
         options=ALL_CHAMPS, 
-        default=st.session_state[f"pool_{user_role}"],
-        key=f"widget_{user_role}" # Unique key for the widget
+        default=default_pool
     )
 
-    # 3. Disable the permanent 'Save' button for the public
-    is_cloud = st.secrets.get("is_cloud", False)
-
+    # 2. THE KILL SWITCH
+    # 'disabled=is_cloud' means the button is grayed out on the web 
+    # but works perfectly on your local machine.
     if st.button(f"💾 Save {user_role} Profile", disabled=is_cloud):
         save_pool_for_role(user_role, my_pool)
-        st.toast(f"Profile Permanently Saved")
-    
+        st.toast(f"Profile Saved Successfully") 
+
+    # 3. DISCLAIMER
     if is_cloud:
-        st.caption("⚠️ Permanent saving disabled. Changes persist for this session only.")
+        st.caption("⚠️ Saving is disabled in the public preview.")
     
 # --- PHASE 2: DRAFT INTAKE (Main Screen) ---
 st.title("🎮 Live Draft Analyzer")
