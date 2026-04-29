@@ -269,20 +269,29 @@ except Exception as e:
 with st.sidebar:
     user_role = st.selectbox("Select Your Role", ["Top", "Jungle", "Mid", "Bot", "Support"])
     
-    # This now looks in the script's folder automatically
-    #saved_data = load_all_pools()
-    #default_pool = saved_data.get(user_role, [])
+    # 1. Initialize the pool in Session State if it doesn't exist yet
+    if f"pool_{user_role}" not in st.session_state:
+        # Try to load from your JSON as a baseline
+        saved_data = load_all_pools()
+        st.session_state[f"pool_{user_role}"] = saved_data.get(user_role, [])
 
-    #my_pool = st.multiselect(
-    #    f"Define {user_role} Pool", 
-    #    options=ALL_CHAMPS, 
-    #    default=default_pool
-    #)
+    # 2. Use the Session State as the default value
+    my_pool = st.multiselect(
+        f"Define {user_role} Pool", 
+        options=ALL_CHAMPS, 
+        default=st.session_state[f"pool_{user_role}"],
+        key=f"widget_{user_role}" # Unique key for the widget
+    )
 
-    #if st.button(f"💾 Save {user_role} Profile"):
-    #    save_pool_for_role(user_role, my_pool)
-    #    st.toast(f"Profile Saved to {DATA_PATH}") # Using st.toast for a clean notification
-    st.divider()
+    # 3. Disable the permanent 'Save' button for the public
+    is_cloud = st.secrets.get("is_cloud", False)
+
+    if st.button(f"💾 Save {user_role} Profile", disabled=is_cloud):
+        save_pool_for_role(user_role, my_pool)
+        st.toast(f"Profile Permanently Saved")
+    
+    if is_cloud:
+        st.caption("⚠️ Permanent saving disabled. Changes persist for this session only.")
     
 # --- PHASE 2: DRAFT INTAKE (Main Screen) ---
 st.title("🎮 Live Draft Analyzer")
