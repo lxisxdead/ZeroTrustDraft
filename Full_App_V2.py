@@ -711,8 +711,13 @@ def identify_overlapping_threats(my_pool, df_matchups, role_base_df, current_rol
 
     # 1. Setup Base Winrates
     role_base_df_clean = role_base_df.copy()
-    role_base_df_clean.iloc[:, 1] = pd.to_numeric(role_base_df_clean.iloc[:, 1], errors='coerce').fillna(50.0)
-    base_wr_map = dict(zip(role_base_df_clean.iloc[:, 0], role_base_df_clean.iloc[:, 1]))
+    
+    # Target columns by name so the order doesn't matter
+    # Ensure 'Champion' and 'Winrate' match your Google Sheet headers exactly
+    role_base_df_clean['Winrate'] = pd.to_numeric(role_base_df_clean['Winrate'], errors='coerce').fillna(50.0)
+    
+    # Create the map using names: { "Kled": 52.1, "Gwen": 49.5 }
+    base_wr_map = dict(zip(role_base_df_clean['Champion'], role_base_df_clean['Winrate']))
 
     # 2. Filter for Pool and Lane, then Deduplicate
     pool_matchups = df_matchups[
