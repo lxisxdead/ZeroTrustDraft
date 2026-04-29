@@ -704,8 +704,8 @@ def calculate_master_score(my_champ, Opp_champ, user_role, blue_team_list, red_t
 def identify_overlapping_threats(my_pool, df_matchups, role_base_df, current_role):
     # --- DEFENSIVE CODING: Fallback if header names change ---
     LANE_COLUMN = 'My_Lane' if 'My_Lane' in df_matchups.columns else 'Lane'
-    CHAMP_COL = 'Champion'
-    WR_COL = 'Winrate'
+    CHAMP_COL = 'My_Champ'
+    WR_COL = 'Matchup_Winrate'
     # --- DYNAMIC ROLE: Use the sidebar selection instead of 'Top' ---
     LANE_VALUE = current_role
 
