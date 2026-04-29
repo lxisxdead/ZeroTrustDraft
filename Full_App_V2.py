@@ -72,14 +72,22 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_PATH = os.path.join(SCRIPT_DIR, "champion_pools.json")
 
 def load_all_pools():
-    """Loads the entire JSON file or creates a blank one if it doesn't exist."""
+    """Loads the entire JSON file locally, or returns blank pools if in the cloud."""
+    # 1. Check if we are running in the public cloud environment
+    is_cloud = st.secrets.get("is_cloud", False)
+
+    if is_cloud:
+        # Return a blank slate so viewers don't see your personal champion pool
+        return {"Top": [], "Jungle": [], "Mid": [], "Bot": [], "Support": []}
+
+    # 2. Local Admin Logic (Runs on your machine only)
     if os.path.exists(DATA_PATH):
         try:
             with open(DATA_PATH, "r") as f:
                 return json.load(f)
         except (json.JSONDecodeError, IOError):
-            # If the file is corrupted or unreadable, return a fresh structure
             return {"Top": [], "Jungle": [], "Mid": [], "Bot": [], "Support": []}
+            
     return {"Top": [], "Jungle": [], "Mid": [], "Bot": [], "Support": []}
 
 def save_pool_for_role(role, pool_list):
