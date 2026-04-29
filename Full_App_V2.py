@@ -270,18 +270,18 @@ with st.sidebar:
     user_role = st.selectbox("Select Your Role", ["Top", "Jungle", "Mid", "Bot", "Support"])
     
     # This now looks in the script's folder automatically
-    saved_data = load_all_pools()
-    default_pool = saved_data.get(user_role, [])
+    #saved_data = load_all_pools()
+    #default_pool = saved_data.get(user_role, [])
 
-    my_pool = st.multiselect(
-        f"Define {user_role} Pool", 
-        options=ALL_CHAMPS, 
-        default=default_pool
-    )
+    #my_pool = st.multiselect(
+    #    f"Define {user_role} Pool", 
+    #    options=ALL_CHAMPS, 
+    #    default=default_pool
+    #)
 
-    if st.button(f"💾 Save {user_role} Profile"):
-        save_pool_for_role(user_role, my_pool)
-        st.toast(f"Profile Saved to {DATA_PATH}") # Using st.toast for a clean notification
+    #if st.button(f"💾 Save {user_role} Profile"):
+    #    save_pool_for_role(user_role, my_pool)
+    #    st.toast(f"Profile Saved to {DATA_PATH}") # Using st.toast for a clean notification
     st.divider()
     
 # --- PHASE 2: DRAFT INTAKE (Main Screen) ---
