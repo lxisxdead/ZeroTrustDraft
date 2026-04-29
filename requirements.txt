@@ -3,7 +3,3 @@ pandas
 gspread
 oauth2client
 cryptography
-subprocess
-sys
-json
-os
