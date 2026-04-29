@@ -71,6 +71,12 @@ WEIGHTING_PROFILES = {
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_PATH = os.path.join(SCRIPT_DIR, "champion_pools.json")
 
+try:
+    is_cloud = st.secrets.get("is_cloud", False)
+except Exception:
+    # Fallback for local testing if secrets aren't set up yet
+    is_cloud = False
+
 def load_all_pools():
     """Loads the entire JSON file or creates a blank one."""
     # If we are in the cloud, we can still load the pools.json 
@@ -81,7 +87,7 @@ def load_all_pools():
                 return json.load(f)
         except (json.JSONDecodeError, IOError):
             return {"Top": [], "Jungle": [], "Mid": [], "Bot": [], "Support": []}
-    return {"Top": [], "Jungle": [], "Mid": [], "Bot": [], "Support": []}
+    return pools
 
 def save_pool_for_role(role, pool_list):
     """Saves only the pool for the currently selected role."""
