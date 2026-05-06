@@ -78,16 +78,21 @@ except Exception:
     is_cloud = False
 
 def load_all_pools():
-    """Loads the entire JSON file or creates a blank one."""
-    # If we are in the cloud, we can still load the pools.json 
-    # that you uploaded to GitHub so users have a 'demo' to look at.
-    if os.path.exists(DATA_PATH):
+    # 1. Define the "Default" state first
+    default_data = {"Top": [], "Jungle": [], "Mid": [], "Bot": [], "Support": []}
+    
+    # 2. Use a relative path for the cloud (no C:\ or D:\)
+    data_file = "saved_pools.json" 
+
+    if os.path.exists(data_file):
         try:
-            with open(DATA_PATH, "r") as f:
+            with open(data_file, "r") as f:
                 return json.load(f)
         except (json.JSONDecodeError, IOError):
-            return {"Top": [], "Jungle": [], "Mid": [], "Bot": [], "Support": []}
-    return pools
+            return default_data
+            
+    # 3. If the file doesn't exist (like on a fresh Cloud deploy), return the default
+    return default_data
 
 def save_pool_for_role(role, pool_list):
     """Saves only the pool for the currently selected role."""
@@ -148,7 +153,7 @@ if 'profiles' not in st.session_state:
 st.set_page_config(page_title="ZeroTrust Draft", 
     layout="wide", 
     initial_sidebar_state="expanded",
-    page_icon="D:\League_of_legends_App_Data\ZeroTrustDraft.ico",
+    page_icon="ZeroTrustDraft.ico",
     )
 
 st.markdown("""
